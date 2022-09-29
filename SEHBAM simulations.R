@@ -264,7 +264,7 @@ random<-c("omega_B","omega_R","omega_m","log_qI")
 
 maps<-list(log_H_input_R=c(factor(NA),factor(NA)))
 
-obj <- MakeADFun( data=data, parameters=params,random=random, map = maps , DLL="SEBDAM")
+obj <- MakeADFun( data=data, parameters=params,random=random, map = maps , DLL="SEHBAM")
 test_dat<-obj$simulate(complete=T)
 
 fit_params<-list()

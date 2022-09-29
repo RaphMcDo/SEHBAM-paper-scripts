@@ -14,7 +14,7 @@ other_dir<-"C:/Users/mcdonaldra/Documents/GitHub/SEHBAM-paper-scripts/"
 TMB::compile(paste0(model_dir,"SEHBAM.cpp"))
 dyn.load(dynlib(paste0(model_dir,"SEHBAM")))
 
-load("anon_data_sehbam.RData")
+load(paste0(other_dir,"anon_data_sehbam.RData"))
 
 params<-list()
 params$log_sigma_epsilon<-0
@@ -22,25 +22,23 @@ params$log_sigma_upsilon<-0
 params$log_R0<-log(200)
 params$log_B0<-log(8000)
 params$log_m0<-log(0.1)
-params$lambda_I<-150
-params$lambda_IR<-50
 params$log_qR<-rep(log(0.3),data$n_h)
 params$beta_I<-rep(0,data$n_h)
-params$beta_IR<-rep(0,data$n_h)
-params$mu_I<- 192.6290
-params$mu_IR<-37.8578
-params$log_var_I<-10.806
-params$log_var_IR<-9.0960
+# params$beta_IR<-rep(0,data$n_h)
+params$mu_I<- 150
+params$mu_IR<-rep(20,data$n_h)
+params$log_var_I<-10
+params$log_var_IR<-rep(10,data$n_h)
 
-params$omega_B<-matrix(rep(0,mesh_BF$n*((data$n_t+1))),ncol=(data$n_t+1))
-params$omega_R<-matrix(rep(0,mesh_BF$n*(data$n_t)),ncol=data$n_t)
+params$omega_B<-matrix(rep(0,data$n_m*((data$n_t+1))),ncol=(data$n_t+1))
+params$omega_R<-matrix(rep(0,data$n_m*(data$n_t)),ncol=data$n_t)
 
-Range_B<-40
+Range_B<-60
 Range_R<-60
-Range_m<-20
-Sigma_B<-0.2
-Sigma_R<-0.2
-Sigma_m<-0.1
+Range_m<-60
+Sigma_B<-0.3
+Sigma_R<-0.3
+Sigma_m<-0.3
 params$log_kappa_B<-log(sqrt(8)/Range_B)
 params$log_tau_B<-log(1/((Sigma_B)*sqrt(4*pi)*exp(params$log_kappa_B)))
 params$log_kappa_R<-log(sqrt(8)/Range_R)
@@ -51,13 +49,13 @@ params$log_tau_R<-log(1/((Sigma_R)*sqrt(4*pi)*exp(params$log_kappa_R)))
 params$log_H_input_B<-c(0,0)
 params$log_H_input_R<-c(0,0)
 
-params$omega_m<-matrix(rep(0,mesh_BF$n*((data$n_t+1))),ncol=(data$n_t+1))
+params$omega_m<-matrix(rep(0,data$n_m*((data$n_t+1))),ncol=(data$n_t+1))
 
 params$log_kappa_m<-log(sqrt(8)/Range_m)
 params$log_tau_m<-log(1/((Sigma_m)*sqrt(4*pi)*exp(params$log_kappa_m)))
 params$log_H_input_m<-c(0,0)
 
-params$log_qI<-rep(NA,nknot)
+params$log_qI<-rep(NA,data$n_s)
 for (i in 1:length(params$log_qI)){
   if (data$h_s[i]<2) {
     params$log_qI[i]<-log(0.3)
@@ -69,15 +67,6 @@ for (i in 1:length(params$log_qI)){
 params$log_qR<-rep(log(0.3),data$n_h)
 
 params$log_S<-rep(log(0.3),data$n_h)
-
-data$prior_pars<-c(50,130,50,130,50,70)
-data$prior_pars_1<-rep(NA,nknot)
-data$prior_pars_2<-rep(NA,nknot)
-for (i in 1:nknot){
-  if (data$h_s[i]==0) {data$prior_pars_1[i]<-50; data$prior_pars_2[i]<-130}
-  if (data$h_s[i]==1) {data$prior_pars_1[i]<-50; data$prior_pars_2[i]<-130}
-  if (data$h_s[i]==2) {data$prior_pars_1[i]<-50; data$prior_pars_2[i]<-70}
-}
 
 random<-c("omega_B","omega_R","omega_m","log_qI")
 
@@ -96,9 +85,9 @@ if (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file="manuscript_SEHBAM_fit.RData")
+save(obj,Opt,rep,Report,file=paste0(other_dir,"manuscript_SEHBAM_fit.RData"))
 
-load("anon_data_SEAM.RData")
+load(paste0(other_dir,"anon_data_SEAM.RData"))
 
 params<-list()
 params$log_sigma_epsilon<-0
@@ -155,9 +144,9 @@ if (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file="SEBDAM_BF_fit_60_knots_habitat_prior_converged.RData")
+save(obj,Opt,rep,Report,file=paste0(other_dir,"SEBDAM_BF_fit_60_knots_habitat_prior_converged.RData"))
 
-load("anon_data_TLM.RData")
+load(paste0(other_dir,"anon_data_TLM.RData"))
 
 params<-list()
 params$log_sigma_tau<--1
@@ -193,5 +182,5 @@ if (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file="TLM_BF_fit_manuscript_diff_prior.RData")
+save(obj,Opt,rep,Report,file=paste0(other_dir,"TLM_BF_fit_manuscript_diff_prior.RData"))
 

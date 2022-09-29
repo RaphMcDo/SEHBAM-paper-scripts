@@ -1,4 +1,4 @@
-#define TMB_LIB_INIT R_init_SEHBAM
+#define TMB_LIB_INIT R_init_SEBDAM
 #include <TMB.hpp>
 
 #include "setups/helpers.hpp"
