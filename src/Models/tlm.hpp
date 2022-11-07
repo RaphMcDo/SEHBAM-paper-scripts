@@ -142,6 +142,8 @@ Type tlm(objective_function <Type>* obj) {
       m(t) = input_m(t);
     }
 
+    log_m = log_input_m;
+
     //Simulate Natural Mortality
     SIMULATE {
       m(0) = Type(0.1);
@@ -161,6 +163,7 @@ Type tlm(objective_function <Type>* obj) {
     ADREPORT(sigma_m);
     ADREPORT(m);
     REPORT(m);
+    ADREPORT(log_m);
   }
 
   // Biomass Process
@@ -206,7 +209,7 @@ Type tlm(objective_function <Type>* obj) {
   if (options_vec[0] == 1) {
     DATA_VECTOR(prior_pars);
     nll_comp[4] -= dbeta(q_I,prior_pars[0],prior_pars[1],true);
-    }
+  }
 
   //Observation equations for observed survey commercial size biomass
   for (int i = 0; i < n_i; i++){
@@ -313,6 +316,10 @@ Type tlm(objective_function <Type>* obj) {
   REPORT(B);
   ADREPORT(R);
   REPORT(R);
+  REPORT(log_B);
+  REPORT(log_R);
+  ADREPORT(log_B);
+  ADREPORT(log_R);
 
   Type nll = nll_comp.sum();
   return nll;

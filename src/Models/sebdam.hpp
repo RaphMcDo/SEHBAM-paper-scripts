@@ -689,6 +689,7 @@ Type sebdam(objective_function <Type>* obj) {
     }
     mean_m(t) = mean_m(t) / n_s;
   }
+  vector <Type> log_mean_m = log(mean_m);
 
   //Divide by 1000 to represent metric tonnes
   for (int t = 0; t < (n_t+1); t++){
@@ -696,12 +697,14 @@ Type sebdam(objective_function <Type>* obj) {
       totB(t) = totB(t) + (areaB(s,t)/1000);
     }
   }
+  vector <Type> log_totB = log(totB);
 
   for (int t = 0; t < (n_t); t++){
     for (int s = 0; s < n_s; s++){
       totR(t) = totR(t)+(areaR(s,t)/1000);
     }
   }
+  vector <Type> log_totR = log(totR);
 
   // Observation equations
 
@@ -876,6 +879,10 @@ Type sebdam(objective_function <Type>* obj) {
   REPORT(m);
   REPORT(mean_m);
   ADREPORT(mean_m);
+
+  ADREPORT(log_totB);
+  ADREPORT(log_totR);
+  ADREPORT(log_mean_m);
 
   if (options_vec[2] == 1){
     ADREPORT(R);

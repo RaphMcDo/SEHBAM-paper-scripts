@@ -11,6 +11,7 @@ invlogit=function(t){exp(t)/(1+exp(t))}
 model_dir<-"C:/Users/mcdonaldra/Documents/GitHub/SEHBAM-paper-scripts/src/"
 other_dir<-"C:/Users/mcdonaldra/Documents/GitHub/SEHBAM-paper-scripts/"
 
+dyn.unload(dynlib(paste0(model_dir,"SEHBAM")))
 TMB::compile(paste0(model_dir,"SEHBAM.cpp"))
 dyn.load(dynlib(paste0(model_dir,"SEHBAM")))
 
@@ -20,7 +21,7 @@ params<-list()
 params$log_sigma_epsilon<-0
 params$log_sigma_upsilon<-0
 params$log_R0<-log(200)
-params$log_B0<-log(8000)
+params$log_B0<-log(10000)
 params$log_m0<-log(0.1)
 params$log_qR<-rep(log(0.3),data$n_h)
 params$beta_I<-rep(0,data$n_h)
@@ -78,9 +79,9 @@ obj <- MakeADFun( data=data, parameters=params,random=random, map = maps )
 Opt<-optimx::optimr(obj$par,obj$fn,obj$gr,
                     control=list(maxit=5000000,maxfeval=5000000),
                     method="nlminb")
-if (Opt$message=="iteration limit reached without convergence (10)") {
+while (Opt$message=="iteration limit reached without convergence (10)") {
       obj$par<-obj$env$last.par[which(names(obj$env$last.par) %in% non_r)]
-      Opt <- try(optimx::optimr(obj$par,obj$fn,obj$gr,control=control,method="nlminb"),T)
+      Opt <- optimx::optimr(obj$par,obj$fn,obj$gr,control=list(maxit=5000000,maxfeval=5000000),method="nlminb")
     }
 rep<-sdreport(obj)
 Report<-obj$report()
@@ -137,9 +138,9 @@ obj <- MakeADFun( data=data, parameters=params,random=random, map = maps )
 Opt<-optimx::optimr(obj$par,obj$fn,obj$gr,
                     control=list(maxit=5000000,maxfeval=5000000),
                     method="nlminb")
-if (Opt$message=="iteration limit reached without convergence (10)") {
+while (Opt$message=="iteration limit reached without convergence (10)") {
   obj$par<-obj$env$last.par[which(names(obj$env$last.par) %in% non_r)]
-  Opt <- try(optimx::optimr(obj$par,obj$fn,obj$gr,control=control,method="nlminb"),T)
+  Opt <- optimx::optimr(obj$par,obj$fn,obj$gr,control=list(maxit=5000000,maxfeval=5000000),method="nlminb")
 }
 rep<-sdreport(obj)
 Report<-obj$report()
@@ -175,9 +176,9 @@ obj <- MakeADFun( data=data, parameters=params,random=random, map = maps )
 Opt<-optimx::optimr(obj$par,obj$fn,obj$gr,
                     control=list(maxit=5000000,maxfeval=5000000),
                     method="nlminb")
-if (Opt$message=="iteration limit reached without convergence (10)") {
+while (Opt$message=="iteration limit reached without convergence (10)") {
   obj$par<-obj$env$last.par[which(names(obj$env$last.par) %in% non_r)]
-  Opt <- try(optimx::optimr(obj$par,obj$fn,obj$gr,control=control,method="nlminb"),T)
+  Opt <- optimx::optimr(obj$par,obj$fn,obj$gr,control=list(maxit=5000000,maxfeval=5000000),method="nlminb")
 }
 rep<-sdreport(obj)
 Report<-obj$report()

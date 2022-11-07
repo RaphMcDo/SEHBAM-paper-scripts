@@ -67,37 +67,37 @@ NY<-length(tlm_Report$B)-1
 bio_tots<-data.frame(tlm=tlm_Report$B,
                      sebdam=sebdam_Report$totB,
                      sehbam=sehbam_Report$totB,
-                     tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="B")],
-                     sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="totB")],
-                     sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="totB")])
+                     tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="log_B")],
+                     sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="log_totB")],
+                     sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="log_totB")])
 
 rec_tots<-data.frame(tlm=tlm_Report$R[-20],
                      sebdam=sebdam_Report$totR,
                      sehbam=sehbam_Report$totR,
-                     tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="R")][-20],
-                     sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="totR")],
-                     sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="totR")])
+                     tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="log_R")][-20],
+                     sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="log_totR")],
+                     sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="log_totR")])
 
 m_tots<-data.frame(tlm=tlm_Report$m,
                    sebdam=sebdam_Report$mean_m,
                    sehbam=sehbam_Report$mean_m,
-                   tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="m")],
-                   sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="mean_m")],
-                   sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="mean_m")])
+                   tlm_se=tlm_rep$sd[which(names(tlm_rep$value)=="log_m")],
+                   sebdam_se=sebdam_rep$sd[which(names(sebdam_rep$value)=="log_mean_m")],
+                   sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="log_mean_m")])
 
 tot_bio_plot<-ggplot(data=bio_tots[-20,])+
   geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=tlm+2*tlm_se,
-                  ymin=tlm-2*tlm_se,col="TLM",fill="TLM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
+                  ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sebdam+2*sebdam_se,
-                  ymin=sebdam-2*sebdam_se,col="SEAM",fill="SEAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
+                  ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sehbam+2*sehbam_se,
-                  ymin=sehbam-2*sehbam_se,col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
+                  ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
   scale_fill_viridis_d(name="Model")+
   scale_shape_discrete(name="Model")+
   scale_color_viridis_d(name="Model")+
@@ -115,16 +115,16 @@ mean(bio_tots$tlm_se/bio_tots$tlm)
 tot_rec_plot<-ggplot(data=rec_tots)+
   geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=tlm+2*tlm_se,
-                  ymin=tlm-2*tlm_se,col="TLM",fill="TLM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
+                  ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sebdam+2*sebdam_se,
-                  ymin=sebdam-2*sebdam_se,col="SEAM",fill="SEAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
+                  ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sehbam+2*sehbam_se,
-                  ymin=sehbam-2*sehbam_se,col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
+                  ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
   scale_fill_viridis_d(name="Model")+
   scale_shape_discrete(name="Model")+
   scale_color_viridis_d(name="Model")+
@@ -137,16 +137,16 @@ tot_rec_plot<-ggplot(data=rec_tots)+
 tot_m_plot<-ggplot(data=m_tots[-20,])+
   geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=tlm+2*tlm_se,
-                  ymin=tlm-2*tlm_se,col="TLM",fill="TLM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
+                  ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sebdam+2*sebdam_se,
-                  ymin=sebdam-2*sebdam_se,col="SEAM",fill="SEAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
+                  ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
   geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
-  geom_ribbon(aes(x=2001:2019,ymax=sehbam+2*sehbam_se,
-                  ymin=sehbam-2*sehbam_se,col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
+                  ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
   scale_fill_viridis_d(name="Model")+
   scale_shape_discrete(name="Model")+
   scale_color_viridis_d(name="Model")+
