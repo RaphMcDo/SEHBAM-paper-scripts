@@ -86,7 +86,7 @@ while (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file=paste0(other_dir,"manuscript_SEHBAM_fit.RData"))
+save(obj,Opt,rep,Report,file=paste0(other_dir,"manuscript_SEHBAM_fit2.RData"))
 
 load(paste0(other_dir,"anon_data_SEAM.RData"))
 
@@ -145,7 +145,7 @@ while (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file=paste0(other_dir,"SEBDAM_BF_fit_60_knots_habitat_prior_converged.RData"))
+save(obj,Opt,rep,Report,file=paste0(other_dir,"SEBDAM_BF_fit_60_knots_habitat_prior_converged2.RData"))
 
 load(paste0(other_dir,"anon_data_TLM.RData"))
 
@@ -183,5 +183,5 @@ while (Opt$message=="iteration limit reached without convergence (10)") {
 rep<-sdreport(obj)
 Report<-obj$report()
 
-save(obj,Opt,rep,Report,file=paste0(other_dir,"TLM_BF_fit_manuscript_diff_prior.RData"))
+save(obj,Opt,rep,Report,file=paste0(other_dir,"TLM_BF_fit_manuscript_diff_prior2.RData"))
 
