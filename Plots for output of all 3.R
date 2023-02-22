@@ -1,13 +1,14 @@
 #Plots from combining SEHBAM, TLM, and SEBDAM outputs
 library(ggplot2)
 library(sf)
+library(dplyr)
 
 nknot<-60
 
 #Comparative qIs
 
 # load("SEBDAM_BF_fit_60_knots.RData")
-load("SEBDAM_BF_fit_60_knots_habitat_prior_converged.RData")
+load("SEBDAM_BF_fit_60_knots_habitat_prior_converged2.RData")
 
 sebdam_rep<-rep
 sebdam_Report<-Report
@@ -17,7 +18,7 @@ sebdam_qIs<-data.frame(qI=rep$value[which(names(rep$value)=="qI")],
                        source=rep("SEAM",60),
                        knotID=unique(obj$env$data$s_i))
 
-load("manuscript_SEHBAM_fit.RData")
+load("manuscript_SEHBAM_fit2.RData")
 
 sehbam_rep<-rep
 sehbam_Report<-Report
@@ -51,11 +52,11 @@ qI_comp_plot<-ggplot(data=all_qIs,aes(x=knotID,y=qI,col=source,shape=source,
   xlab("Knot")+ylab("Value")
 # ggsave(filename=paste0(fig_dir,"qI_comp_plot.png"),
 # plot=qI_comp_plot,height=8,width=10)
-ggsave(filename=paste0(fig_dir,"qI_comp_plot_supp.png"),
-       plot=qI_comp_plot,height=8,width=10)
+# ggsave(filename=paste0(fig_dir,"qI_comp_plot_supp.png"),
+#        plot=qI_comp_plot,height=8,width=10)
 
 # load("TLM_BF_fit_manuscript.RData")
-load("TLM_BF_fit_manuscript_diff_prior.RData")
+load("TLM_BF_fit_manuscript_diff_prior2.RData")
 
 tlm_rep<-rep
 tlm_Report<-Report
@@ -86,24 +87,24 @@ m_tots<-data.frame(tlm=tlm_Report$m,
                    sehbam_se=sehbam_rep$sd[which(names(sehbam_rep$value)=="log_mean_m")])
 
 tot_bio_plot<-ggplot(data=bio_tots[-20,])+
-  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
+  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
                   ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
+  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
                   ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
+  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
                   ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
-  scale_fill_viridis_d(name="Model")+
+  scale_fill_manual(name="Model",values=c("blue","black","orange"))+
   scale_shape_discrete(name="Model")+
-  scale_color_viridis_d(name="Model")+
+  scale_color_manual(name="Model",values=c("blue","black","orange"))+
   theme_bw()+xlab("Year")+ylab("Total Biomass (metric tonnes)")
-ggsave(filename=paste0(fig_dir,"tot_B_plot.png"),
-       plot=tot_bio_plot,height=7,width=9)
+# ggsave(filename=paste0(fig_dir,"tot_B_plot.png"),
+#        plot=tot_bio_plot,height=7,width=9)
 # ggsave(filename=paste0(fig_dir,"tot_B_plot_supp.png"),
 #        plot=tot_bio_plot,height=7,width=9)
 
@@ -113,21 +114,21 @@ mean(bio_tots$sebdam_se/bio_tots$sebdam)
 mean(bio_tots$tlm_se/bio_tots$tlm)
 
 tot_rec_plot<-ggplot(data=rec_tots)+
-  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
+  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
                   ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
+  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
                   ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
+  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
                   ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
-  scale_fill_viridis_d(name="Model")+
+  scale_fill_manual(name="Model",values=c("blue","black","orange"))+
   scale_shape_discrete(name="Model")+
-  scale_color_viridis_d(name="Model")+
+  scale_color_manual(name="Model",values=c("blue","black","orange"))+
   theme_bw()+xlab("Year")+ylab("Total Recruitment (metric tonnes)")
 # ggsave(filename=paste0(fig_dir,"tot_R_plot.png"),
 #        plot=tot_rec_plot,height=7,width=9)
@@ -135,21 +136,21 @@ tot_rec_plot<-ggplot(data=rec_tots)+
 #        plot=tot_rec_plot,height=7,width=9)
 
 tot_m_plot<-ggplot(data=m_tots[-20,])+
-  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"))+
+  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
                   ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"))+
+  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
                   ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
-  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"))+
+  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"),cex=2.25)+
   geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
   geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
                   ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
-  scale_fill_viridis_d(name="Model")+
+  scale_fill_manual(name="Model",values=c("blue","black","orange"))+
   scale_shape_discrete(name="Model")+
-  scale_color_viridis_d(name="Model")+
+  scale_color_manual(name="Model",values=c("blue","black","orange"))+
   theme_bw()+xlab("Year")+ylab("Mean Instantaneous Natural Mortality")
 # ggsave(filename=paste0(fig_dir,"tot_m_plot.png"),
 #        plot=tot_m_plot,height=7,width=9)
@@ -277,3 +278,28 @@ spatial_qI_diff_plot<-ggplot()+
 #        plot=spatial_qI_diff_plot,height=12,width=12)
 
 
+load("stratified_means.RData")
+tot_bio_strat_plot<-ggplot(data=bio_tots[-20,])+
+  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
+                  ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
+                  ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
+                  ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=final_strat_means$scaled_I,col="Stratified Mean",shape="Stratified Mean"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=final_strat_means$scaled_I,col="Stratified Mean"))+
+  geom_ribbon(aes(x=2001:2019,ymax=final_strat_means$scaled_I+2*final_strat_means$se,
+                  ymin=final_strat_means$scaled_I-2*final_strat_means$se,
+              col="Stratified Mean",fill="Stratified Mean"),alpha=0.2)+
+  scale_fill_manual(name="Model",values=c("blue","black","firebrick2","orange"))+
+  scale_shape_discrete(name="Model")+
+  scale_color_manual(name="Model",values=c("blue","black","firebrick2","orange"))+
+  theme_bw()+xlab("Year")+ylab("Total Biomass (metric tonnes)")
+ggsave(filename=paste0(fig_dir,"tot_bio_strat.png"),plot=tot_bio_strat_plot,
+       height=7,width=9)

@@ -75,6 +75,7 @@ maps<-list(log_H_input_R=c(factor(NA),factor(NA)))
 
 non_r<-names(params)[-which(names(params) %in% random)]
 
+time1<-Sys.time()
 obj <- MakeADFun( data=data, parameters=params,random=random, map = maps )
 Opt<-optimx::optimr(obj$par,obj$fn,obj$gr,
                     control=list(maxit=5000000,maxfeval=5000000),
@@ -85,6 +86,8 @@ while (Opt$message=="iteration limit reached without convergence (10)") {
     }
 rep<-sdreport(obj)
 Report<-obj$report()
+time2<-Sys.time()
+time2-time1
 
 save(obj,Opt,rep,Report,file=paste0(other_dir,"manuscript_SEHBAM_fit2.RData"))
 
