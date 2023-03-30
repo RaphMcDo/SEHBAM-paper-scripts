@@ -240,17 +240,18 @@ log_spatial_m_plot<-ggplot()+
 #        plot=log_spatial_m_plot,height=12,width=12)
 
 all_qIs$knotID<-all_qIs$knotID+1
-qIs_spat<-left_join(all_qIs,gridded_bound_shape,by="knotID") %>% st_as_sf()
+qIs_spat<-left_join(all_qIs,gridded_bound_shape,by="knotID",multiple="all") %>% st_as_sf()
 
 spatial_qI_plot<-ggplot()+
   geom_sf(data=qIs_spat,aes(fill=qI),col=NA)+
   facet_wrap(~source)+
-  scale_fill_distiller(name="Commercial Size \nCatchability",palette="Spectral")+
+  # scale_fill_distiller(name="Commercial Size \nCatchability",palette="Spectral")+
+  scale_fill_viridis_c(name="Commercial Size \nCatchability")+
   geom_sf(data=plot_map)+theme_bw()+
   coord_sf(xlim=c(690,890),ylim=c(4870,5080))+
   xlab("Easting")+ylab("Northing")
 # ggsave(filename=paste0(fig_dir,"spat_qI_plot.png"),
-#        plot=spatial_qI_plot,height=12,width=12)
+       # plot=spatial_qI_plot,height=12,width=12)
 # ggsave(filename=paste0(fig_dir,"spat_qI_plot_supp.png"),
 #        plot=spatial_qI_plot,height=12,width=12)
 
@@ -302,4 +303,40 @@ tot_bio_strat_plot<-ggplot(data=bio_tots[-20,])+
   scale_color_manual(name="Model",values=c("blue","black","firebrick2","orange"))+
   theme_bw()+xlab("Year")+ylab("Total Biomass (metric tonnes)")
 ggsave(filename=paste0(fig_dir,"tot_bio_strat.png"),plot=tot_bio_strat_plot,
+       height=7,width=9)
+
+final_strat_means2<-final_strat_means
+final_strat_means2$large_I<-final_strat_means2$scaled_I*0.304/0.246
+final_strat_means2$large_se<-final_strat_means2$se*0.304/0.246
+final_strat_means2$small_I<-final_strat_means2$scaled_I*0.304/0.376
+final_strat_means2$small_se<-final_strat_means2$se*0.304/0.376
+
+tot_bio_strat_plot2<-ggplot(data=bio_tots[-20,])+
+  geom_point(aes(x=2001:2019,y=tlm,col="TLM",shape="TLM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=tlm,col="TLM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(tlm)+2*tlm_se),
+                  ymin=exp(log(tlm)-2*tlm_se),col="TLM",fill="TLM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=sebdam,col="SEAM",shape="SEAM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=sebdam,col="SEAM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sebdam)+2*sebdam_se),
+                  ymin=exp(log(sebdam)-2*sebdam_se),col="SEAM",fill="SEAM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=sehbam,col="SEHBAM",shape="SEHBAM"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=sehbam,col="SEHBAM"))+
+  geom_ribbon(aes(x=2001:2019,ymax=exp(log(sehbam)+2*sehbam_se),
+                  ymin=exp(log(sehbam)-2*sehbam_se),col="SEHBAM",fill="SEHBAM"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=final_strat_means2$large_I,col="Stratified Mean",shape="Stratified Mean"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=final_strat_means2$large_I,col="Stratified Mean"))+
+  geom_ribbon(aes(x=2001:2019,ymax=final_strat_means2$large_I+2*final_strat_means2$large_se,
+                  ymin=final_strat_means2$large_I-2*final_strat_means2$large_se,
+                  col="Stratified Mean",fill="Stratified Mean"),alpha=0.2)+
+  geom_point(aes(x=2001:2019,y=final_strat_means2$small_I,col="Stratified Mean",shape="Stratified Mean"),cex=2.25)+
+  geom_line(aes(x=2001:2019,y=final_strat_means2$small_I,col="Stratified Mean"))+
+  geom_ribbon(aes(x=2001:2019,ymax=final_strat_means2$small_I+2*final_strat_means2$small_se,
+                  ymin=final_strat_means2$small_I-2*final_strat_means2$small_se,
+                  col="Stratified Mean",fill="Stratified Mean"),alpha=0.2)+
+  scale_fill_manual(name="Model",values=c("blue","black","firebrick2","orange"))+
+  scale_shape_discrete(name="Model")+
+  scale_color_manual(name="Model",values=c("blue","black","firebrick2","orange"))+
+  theme_bw()+xlab("Year")+ylab("Total Biomass (metric tonnes)")
+ggsave(filename=paste0(fig_dir,"tot_bio_strat2.png"),plot=tot_bio_strat_plot2,
        height=7,width=9)
